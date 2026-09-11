@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>NoVaWatts // Save Energy VA-10</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <div class="logo-area">⚡ NOVA<span>WATTS</span></div>
+        <p>Helping Northern Virginia families save money and beat the data center grid crunch.</p>
+    </header>
+
+    <div class="main-layout">
+        
+        <div class="glass-card text-center">
+            <h3>Right Now in Your Neighborhood</h3>
+            <div id="status-box" class="loading">CHECKING POWER GRID...</div>
+            <p id="status-msg" class="subtext">Checking the time to see if local power lines are busy...</p>
+            
+            <div class="sim-toggle-box" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; gap: 10px;">
+                <span style="font-size: 0.85rem; color: #94a3b8;">Testing App? Force Peak Mode:</span>
+                <input type="checkbox" id="sim-peak-toggle" style="width: 18px; height: 18px; cursor: pointer;">
+            </div>
+        </div>
+
+        <div class="glass-card">
+            <h3>Appliance Energy Analyzer</h3>
+            <p class="section-desc">Click an appliance to check its power level and see a smarter way to run it during busy peak hours:</p>
+            
+            <div class="appliance-grid">
+                <button class="node-btn" onclick="checkAppliance('Clothes Dryer', '🔴 High (5000 Watts)', 'Dryers take massive grid power. Switch to a lower temperature run or air-dry some clothes when the grid is busy.')">🧺 Dryer</button>
+                <button class="node-btn" onclick="checkAppliance('Central AC Unit', '🟡 Medium-High (3500 Watts)', 'AC strains lines during 4 PM - 8 PM heat. Cool your house early in the morning instead.')">❄️ AC Unit</button>
+                <button class="node-btn" onclick="checkAppliance('Dishwasher Cycle', '🟢 Medium-Low (1800 Watts)', 'Dishwashers use water heaters. Simply set a timer to run it automatically after 9 PM.')">🍽️ Dishwasher</button>
+            </div>
+
+            <div id="appliance-panel" class="hidden visual-panel">
+                <div class="panel-header">
+                    <span id="app-name">No Device Picked</span>
+                    <span class="badge" id="app-load" style="background:#2563eb;">0 Watts</span>
+                </div>
+                <p id="app-desc" class="panel-desc" style="margin-top:10px;"></p>
+            </div>
+        </div>
+
+        <div class="glass-card">
+            <h3>Check Your Area's Power Demand</h3>
+            <p class="section-desc">Click on a local tech hub to see how nearby data centers are impacting the power grid right now:</p>
+            
+            <div class="sim-grid-layout">
+                <button class="node-btn" onclick="chkNode('Ashburn Data Centers', 89, 'CRITICAL DEMAND: Ashburn handles 70% of the world\'s internet traffic. Right now, data centers are pulling massive power, causing high stress on neighborhood electricity lines.', '#ff4a4a')">
+                    <span class="node-dot alert-dot"></span> Ashburn Loop
+                </button>
+                <button class="node-btn" onclick="chkNode('Leesburg Tech Corridor', 48, 'MODERATE DEMAND: New data centers are being built here quickly. The power grid is doing fine, but energy demand is climbing every year.', '#ffb700')">
+                    <span class="node-dot warn-dot"></span> Leesburg Sect.
+                </button>
+                <button class="node-btn" onclick="chkNode('Fauquier Rural Border', 14, 'SAFE & LOW DEMAND: Mostly neighborhoods and open farmland here. There are barely any data centers around, so power grid strain is super low.', '#00e676')">
+                    <span class="node-dot safe-dot"></span> Fauquier Rural
+                </button>
+            </div>
+
+            <div id="sim-panel" class="hidden visual-panel">
+                <div class="panel-header">
+                    <span id="p-name">No Hub Selected</span>
+                    <span class="badge" id="p-badge">0% Full</span>
+                </div>
+                <div class="progress-bar-container">
+                    <div id="p-bar" class="progress-fill"></div>
+                </div>
+                <p id="p-desc" class="panel-desc"></p>
+            </div>
+        </div>
+
+        <div class="glass-card">
+            <h3>See How Much Money You Can Save</h3>
+            
+            <div class="input-wrapper">
+                <label>Your Average Monthly Electric Bill ($)</label>
+                <input type="number" id="user-bill" placeholder="Example: 150">
+            </div>
+
+            <div class="options-stack">
+                <div class="opt-row">
+                    <input type="checkbox" id="c1" class="disc-chk" value="0.10">
+                    <label for="c1">Run laundry and dishwashers after 8:00 PM <span>(Save 10%)</span></label>
+                </div>
+                <div class="opt-row">
+                    <input type="checkbox" id="c2" class="disc-chk" value="0.08">
+                    <label for="c2">Turn the AC up 2 degrees when the grid is busy <span>(Save 8%)</span></label>
+                </div>
+                <div class="opt-row">
+                    <input type="checkbox" id="c3" class="disc-chk" value="0.05">
+                    <label for="c3">Unplug phone chargers and TV setups when not in use <span>(Save 5%)</span></label>
+                </div>
+            </div>
+
+            <button id="calc-go">Calculate My New Bill</button>
+            
+            <div id="math-view" class="hidden result-display">
+                <div class="stat-box">
+                    <span class="stat-lbl">Your Lowered Bill</span>
+                    <span id="res-bill" class="stat-num text-green">$0.00</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-lbl">Money Kept in Pocket</span>
+                    <span id="res-saved" class="stat-num text-blue">$0.00</span>
+                </div>
+                
+                <div class="stat-box" style="border-left: 2px solid #a855f7;">
+                    <span class="stat-lbl">Your Carbon Status Badge</span>
+                    <span id="community-rank" class="stat-num" style="color: #c084fc; font-size:1.1rem; display:block; margin-top:5px;">Eco Rookie</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="glass-card">
+            <h3>Contact Representative Subramanyam</h3>
+            <p class="section-desc">Want to share your thoughts on local utility costs and tech expansion? Select your primary concern to draft a custom message:</p>
+            
+            <div class="input-wrapper">
+                <label>Select Your Main Concern</label>
+                <select id="issue-select" style="background: rgba(15, 23, 42, 0.8); color: #fff; border: 1px solid rgba(255,255,255,0.1); padding: 12px; width: 100%; border-radius: 10px; font-size: 1rem; outline: none; cursor: pointer;">
+                    <option value="rates">Rising Residential Electricity Rates</option>
+                    <option value="grid">Grid Strain From Fast Data Center Growth</option>
+                    <option value="green">Preserving Parks and Green Spaces</option>
+                </select>
+            </div>
+
+            <button id="letter-go" style="background: linear-gradient(135deg, #4f46e5, #4338ca); box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);">Draft My Message</button>
+            
+            <div id="letter-view" class="hidden visual-panel" style="margin-top: 20px;">
+                <p style="font-size:0.8rem; color:#64748b; margin-top:0; text-transform:uppercase; font-weight:bold; letter-spacing:0.5px;">Your Pre-written Draft Template:</p>
+                <div id="letter-text" style="background:#0f172a; padding:15px; border-radius:8px; border:1px solid rgba(255,255,255,0.05); white-space: pre-wrap; font-size:0.9rem; line-height:1.6; color:#e2e8f0; font-family:monospace;"></div>
+                <p class="subtext" style="text-align:left; font-size:0.8rem; margin-top:12px;">💡 Copy this text and paste it into the official congressional contact portal!</p>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
